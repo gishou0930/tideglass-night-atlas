@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#081317">
+    <title>Tideglass — The Night Atlas</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="masthead">
+        <div class="brand">
+          <div class="brand-seal" aria-hidden="true"><span>✦</span></div>
+          <div>
+            <p class="eyebrow">BELLWETHER FIELD NOTES <span>·</span> AFTER HOURS</p>
+            <h1>TIDEGLASS <i>—</i> <span>THE NIGHT ATLAS</span></h1>
+          </div>
+        </div>
+        <div class="mast-meta">
+          <span class="weather-dot"></span>
+          <span>LOW TIDE</span>
+          <span class="meta-divider"></span>
+          <span>NO. 03 / NORTH COAST</span>
+        </div>
+      </header>
+
+      <section class="play-layout" aria-label="Tideglass stealth game">
+        <aside class="field-card">
+          <div class="card-topline"><span id="chapterTag">FIELD 01</span><span class="live-mark">● LIVE</span></div>
+          <p class="micro-label">YOUR ASSIGNMENT</p>
+          <h2 id="roomName">The Lens Gallery</h2>
+          <p class="room-caption" id="roomCaption">A map made of stars</p>
+          <div class="rule"></div>
+
+          <div class="objective">
+            <div class="objective-icon" id="objectiveIcon">✦</div>
+            <div>
+              <p class="micro-label">RECOVER THE ATLAS</p>
+              <p class="objective-name" id="objectiveName">North Current</p>
+            </div>
+            <span class="objective-check" id="objectiveCheck">○</span>
+          </div>
+          <p class="mission-copy" id="missionCopy">Three pages are missing from the Night Atlas. Take each one, then reach the tide door before the beacon turns.</p>
+
+          <div class="rule"></div>
+          <div class="alert-head">
+            <span class="micro-label">WARDEN ATTENTION</span>
+            <span class="alert-word" id="alertWord">UNSEEN</span>
+          </div>
+          <div class="alert-track" aria-label="Warden attention">
+            <div class="alert-fill" id="alertFill"></div>
+            <span class="alert-tick t1"></span><span class="alert-tick t2"></span><span class="alert-tick t3"></span>
+          </div>
+          <div class="status-row">
+            <span id="stealthStatus">In the blue hour</span>
+            <span id="timer">00:00</span>
+          </div>
+
+          <div class="rule"></div>
+          <div class="intel-row">
+            <div class="intel">
+              <span class="intel-icon">◌</span>
+              <div><span class="micro-label">ECHO SHELLS</span><strong id="echoCount">03</strong></div>
+            </div>
+            <div class="intel">
+              <span class="intel-icon footstep-icon">⌁</span>
+              <div><span class="micro-label">NEAREST STEP</span><strong id="footstep">—</strong></div>
+            </div>
+          </div>
+
+          <div class="rule"></div>
+          <div class="controls-title"><span class="micro-label">FIELD KIT</span><span>KEYS / MOUSE</span></div>
+          <div class="control"><kbd>W A S D</kbd><span>move · click to route</span></div>
+          <div class="control"><kbd>SHIFT</kbd><span>soft steps, slower pace</span></div>
+          <div class="control"><kbd>SPACE</kbd><span>duck behind nearby cover</span></div>
+          <div class="control"><kbd>E / RMB</kbd><span>throw an echo shell</span></div>
+
+          <div class="card-footer">
+            <span><b>01</b> / 03 CHARTS</span>
+            <span class="footer-note">A quiet mind leaves no wake.</span>
+          </div>
+        </aside>
+
+        <section class="stage" aria-label="Top-down gallery">
+          <div class="stage-top">
+            <span class="stage-kicker"><b>THE ARCHIVE BELOW</b><i> / </i><span id="stageSubtitle">A LANTERN'S REACH</span></span>
+            <span class="coordinate">N 51° 43′ <b>·</b> W 04° 12′</span>
+          </div>
+          <div class="canvas-frame">
+            <canvas id="gameCanvas" width="1100" height="610" aria-label="Top-down stealth game with patrolling wardens, lantern cones, chart-stack cover and a tide door"></canvas>
+            <div class="screen-shade" id="screenShade" hidden></div>
+            <section class="screen-card" id="screenCard" hidden aria-live="polite">
+              <p class="screen-kicker" id="screenKicker">A FIELD GUIDE</p>
+              <h2 id="screenTitle">THE NIGHT ATLAS</h2>
+              <p id="screenCopy">The tide is out. Three charts are still inside.</p>
+              <button id="screenAction" type="button">SLIP INSIDE <span>↗</span></button>
+              <p class="screen-hint" id="screenHint">W A S D to move · hold SPACE to disappear</p>
+            </section>
+          </div>
+          <div class="stage-bottom">
+            <span><span class="tiny-spark">✦</span> TIDEGLASS ARCHIVE / NORTH COAST</span>
+            <span id="toast" class="toast">The keepers walk the old routes.</span>
+            <span>FIELD RECORD <b>—</b> 00:00</span>
+          </div>
+        </section>
+      </section>
+
+      <footer class="footer">
+        <span>FIELD GUIDE <b>NO. 17</b> · BELLWETHER ARCHIVE</span>
+        <span>ORIGINAL GAME / BUILT FOR THE QUIET HOURS</span>
+      </footer>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
