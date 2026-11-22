@@ -2,6 +2,8 @@ import { ARCHIVE, LEVELS } from './levels.js';
 import { circleHitsRect, distance, edgeDistance, inVisionCone, lineBlocked } from './geometry.js';
 
 const MAX_ECHOES = 3;
+const SALT_VEIL_CHARGES = 2;
+const SALT_VEIL_DURATION = 5;
 
 export function createGame() {
   const game = {
@@ -17,6 +19,8 @@ export function createGame() {
     totalTime: 0,
     echoCount: MAX_ECHOES,
     echoRecharge: 0,
+    saltVeilCharges: SALT_VEIL_CHARGES,
+    saltVeilTime: 0,
     artifactFound: false,
     hidden: false,
     nearestCover: null,
@@ -55,6 +59,8 @@ function loadLevel(game, index) {
   game.alert = 0;
   game.echoCount = MAX_ECHOES;
   game.echoRecharge = 0;
+  game.saltVeilCharges = SALT_VEIL_CHARGES;
+  game.saltVeilTime = 0;
   game.artifactFound = false;
   game.hidden = false;
   game.nearestCover = null;
@@ -119,6 +125,14 @@ export function throwEcho(game, point, audio) {
   return true;
 }
 
+export function useSaltVeil(game) {
+  if (game.mode !== 'playing' || game.saltVeilCharges <= 0 || game.saltVeilTime > 0) return false;
+  game.saltVeilCharges -= 1;
+  game.saltVeilTime = SALT_VEIL_DURATION;
+  game.toast = 'Salt veil woven. The lanterns cannot read the brine.';
+  return true;
+}
+
 export function setRoute(game, point) {
   if (game.mode !== 'playing') return;
   const route = findRoute(game.player, point, game.level.solids);
@@ -131,6 +145,7 @@ export function updateGame(game, dt, keys, audio) {
   if (game.mode !== 'playing') return;
   game.elapsed += dt;
   game.totalTime += dt;
+  game.saltVeilTime = Math.max(0, game.saltVeilTime - dt);
   game.echoRecharge += dt;
   if (game.echoCount < MAX_ECHOES && game.echoRecharge >= 7) {
     game.echoCount += 1;
@@ -343,7 +358,7 @@ function readTheLanterns(game, dt, keys, audio) {
       nearestDistance = playerDistance;
       nearest = guard;
     }
-    const canSee = !game.hidden
+    const canSee = !game.hidden && game.saltVeilTime <= 0
       && inVisionCone(guard, game.player, guard.range, guard.fov / 2)
       && !lineBlocked(guard, game.player, game.level.solids);
     if (canSee) {
@@ -367,7 +382,7 @@ function readTheLanterns(game, dt, keys, audio) {
     const beacon = game.level.beacon;
     game.beaconAngle = Math.PI / 2 + Math.sin(game.elapsed * beacon.speed) * beacon.sweep;
     const observer = { x: beacon.x, y: beacon.y, angle: game.beaconAngle };
-    beaconSees = !game.hidden
+    beaconSees = !game.hidden && game.saltVeilTime <= 0
       && inVisionCone(observer, game.player, beacon.range, beacon.width / 2)
       && !lineBlocked(observer, game.player, game.level.solids);
   }
@@ -435,10 +450,11 @@ export function hudState(game) {
     objectiveFound: game.artifactFound,
     alertPercent: Math.round(game.alert * 100),
     alertLabel,
-    stealth: game.hidden ? 'Under the chart-stack' : game.nearbyGuard ? 'Footsteps in the ' + direction.toLowerCase() : 'In the blue hour',
+    stealth: game.saltVeilTime > 0 ? 'Inside the salt veil' : game.hidden ? 'Under the chart-stack' : game.nearbyGuard ? 'Footsteps in the ' + direction.toLowerCase() : 'In the blue hour',
     timer: formatTime(game.totalTime),
     echoes: String(game.echoCount).padStart(2, '0'),
-    footstep: direction,
+    saltVeilCharges: String(game.saltVeilCharges).padStart(2, '0'),
+    veilActive: game.saltVeilTime > 0,
     stageSubtitle: level.region,
     toast: game.toast,
     pageCount: String(game.pagesFound).padStart(2, '0') + ' / 03 CHARTS',

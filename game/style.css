@@ -105,7 +105,7 @@ h1 span { color: #aeb9a8; font-size: 15px; letter-spacing: .14em; }
 .intel-row { gap: 6px; }
 .intel { flex: 1; min-width: 0; gap: 7px; }
 .intel-icon { color: #e0bb76; font-size: 19px; }
-.footstep-icon { color: #8dcfc1; }
+.veil-icon { color: #8dcfc1; }
 .intel strong { display: block; margin-top: 2px; color: #ddd5bc; font: 12px "Courier New", monospace; }
 .controls-title { margin-bottom: 9px; color: #738680; font-size: 7px; }
 .control { min-height: 22px; gap: 7px; color: #9ba9a0; font-size: 9px; white-space: nowrap; }

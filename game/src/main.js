@@ -1,5 +1,5 @@
 import { createAudio } from './audio.js';
-import { beginGame, continueAfterClear, createGame, hudState, restartLevel, setRoute, throwEcho, togglePause, updateGame } from './game.js';
+import { beginGame, continueAfterClear, createGame, hudState, restartLevel, setRoute, throwEcho, togglePause, updateGame, useSaltVeil } from './game.js';
 import { renderScene, screenToWorld } from './render.js';
 import { CANVAS } from './render.js';
 
@@ -20,7 +20,7 @@ const nodes = {
   stealthStatus: document.getElementById('stealthStatus'),
   timer: document.getElementById('timer'),
   echoCount: document.getElementById('echoCount'),
-  footstep: document.getElementById('footstep'),
+  saltVeilCount: document.getElementById('saltVeilCount'),
   stageSubtitle: document.getElementById('stageSubtitle'),
   toast: document.getElementById('toast'),
   footerCount: document.querySelector('.card-footer span:first-child'),
@@ -70,7 +70,8 @@ function refreshHud() {
   nodes.stealthStatus.textContent = data.stealth;
   nodes.timer.textContent = data.timer;
   nodes.echoCount.textContent = data.echoes;
-  nodes.footstep.textContent = data.footstep;
+  nodes.saltVeilCount.textContent = data.saltVeilCharges;
+  nodes.saltVeilCount.style.color = data.veilActive ? '#9fe5d0' : '';
   nodes.stageSubtitle.textContent = data.stageSubtitle;
   nodes.toast.textContent = data.toast;
   nodes.footerCount.textContent = data.pageCount;
@@ -109,7 +110,7 @@ nodes.screenAction.addEventListener('click', () => {
 
 window.addEventListener('keydown', (event) => {
   const key = event.key.toLowerCase();
-  if (event.repeat && ['e', 'enter', 'r', 'escape', 'p'].includes(key)) return;
+  if (event.repeat && ['e', 'q', 'enter', 'r', 'escape', 'p'].includes(key)) return;
   if ([' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) event.preventDefault();
   keys.add(key);
   if (key === 'enter') {
@@ -129,6 +130,10 @@ window.addEventListener('keydown', (event) => {
   }
   if (key === 'e') {
     throwEcho(game, game.mouse, audio);
+  }
+  if (key === 'q') {
+    useSaltVeil(game);
+    refreshHud();
   }
 });
 

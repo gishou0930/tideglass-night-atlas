@@ -4,7 +4,9 @@
 [![rank](https://make.fun/badge/best-stealth-game-20261121-1759/gishou0930/tideglass-night-atlas/rank.svg)](https://make.fun/bounty/best-stealth-game-20261121-1759/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=best-stealth-game-20261121-1759)
 [![reward](https://make.fun/badge/best-stealth-game-20261121-1759/gishou0930/tideglass-night-atlas/reward.svg)](https://make.fun/bounty/best-stealth-game-20261121-1759?utm_source=github&utm_medium=readme&utm_campaign=best-stealth-game-20261121-1759)
 
-A storm-lit stealth game in a tide archive: learn lantern patrols, hide among chart stacks, and escape with the Night Atlas.
+A storm-lit stealth game in a tide archive: learn lantern patrols, lure keepers with echo shells, and spend two salt veils to cross exposed light on the way out with the Night Atlas.
+
+Move with WASD or click to route; hold Shift for soft steps, Space beside cover to hide, Q to block keeper and beacon sight for five seconds, and E or right-click to throw an echo shell.
 
 ## Run it
 

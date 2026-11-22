@@ -33,6 +33,7 @@ export function renderScene(ctx, game, time) {
   drawEchoes(ctx, game.echoes);
   drawFootprints(ctx, game.player.steps);
   drawPlannedRoute(ctx, game.player);
+  drawSaltVeil(ctx, game.player, game.saltVeilTime, time);
   drawFurniture(ctx, game.level.solids);
   drawGuards(ctx, game.guards);
   drawPlayer(ctx, game.player, game.hidden, time);
@@ -382,6 +383,38 @@ function drawPlannedRoute(ctx, player) {
   }
   ctx.stroke();
   ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function drawSaltVeil(ctx, player, remaining, time) {
+  if (remaining <= 0) return;
+  const pulse = Math.sin(time * 4.5);
+  const radius = 68 + pulse * 5;
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  const mist = ctx.createRadialGradient(player.x, player.y, 8, player.x, player.y, radius);
+  mist.addColorStop(0, 'rgba(130,220,200,.2)');
+  mist.addColorStop(.62, 'rgba(108,202,189,.12)');
+  mist.addColorStop(1, 'rgba(108,202,189,0)');
+  ctx.fillStyle = mist;
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(163,232,212,.62)';
+  ctx.lineWidth = 1.2;
+  ctx.setLineDash([5, 8]);
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, 48 + pulse * 3, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  for (let index = 0; index < 7; index += 1) {
+    const angle = index * Math.PI * 2 / 7 + time * .35;
+    const drift = Math.sin(time * 2 + index * 1.7) * 4;
+    ctx.fillStyle = 'rgba(190,242,220,.72)';
+    ctx.beginPath();
+    ctx.arc(player.x + Math.cos(angle) * (34 + drift), player.y + Math.sin(angle) * (34 + drift), 1.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
   ctx.restore();
 }
 
