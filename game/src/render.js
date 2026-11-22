@@ -78,6 +78,8 @@ function drawFloor(ctx, level, time, levelIndex) {
     { floor: ['#263638', '#1d3030', '#172829'], tile: ['#71827b', '#192e2d'], detail: 'rgba(225,211,177,.15)', pools: ['rgba(190,151,93,.12)', 'rgba(71,143,139,.14)', 'rgba(209,151,85,.12)'] },
     { floor: ['#1d3540', '#172a35', '#10232e'], tile: ['#75949a', '#142a36'], detail: 'rgba(168,218,213,.17)', pools: ['rgba(64,144,158,.16)', 'rgba(65,113,135,.14)', 'rgba(181,151,103,.10)'] },
     { floor: ['#27344a', '#1c293c', '#101b2e'], tile: ['#73899b', '#121f32'], detail: 'rgba(177,200,216,.17)', pools: ['rgba(73,129,166,.15)', 'rgba(56,102,155,.14)', 'rgba(145,177,180,.10)'] },
+    { floor: ['#352b45', '#241e36', '#131524'], tile: ['#a079bc', '#242038'], detail: 'rgba(224,190,245,.17)', pools: ['rgba(118,80,161,.16)', 'rgba(80,106,176,.15)', 'rgba(197,125,160,.11)'] },
+    { floor: ['#18343b', '#10272d', '#09181f'], tile: ['#659a96', '#112a31'], detail: 'rgba(167,223,213,.18)', pools: ['rgba(75,151,145,.17)', 'rgba(83,119,157,.16)', 'rgba(191,148,94,.12)'] },
   ];
   const palette = palettes[levelIndex] || palettes[0];
   const base = ctx.createLinearGradient(0, 0, 970, 500);
@@ -182,7 +184,7 @@ function drawFieldPattern(ctx, levelIndex, time) {
       }
       ctx.stroke();
     }
-  } else {
+  } else if (levelIndex === 2) {
     ctx.strokeStyle = 'rgba(154,206,225,.12)';
     ctx.setLineDash([3, 8]);
     [88, 158, 236, 320, 420].forEach((radius) => {
@@ -190,6 +192,27 @@ function drawFieldPattern(ctx, levelIndex, time) {
       ctx.arc(500, 28, radius, .28, Math.PI - .28);
       ctx.stroke();
     });
+  } else if (levelIndex === 3) {
+    ctx.strokeStyle = 'rgba(210,172,233,.13)';
+    [92, 154, 226, 310, 402].forEach((radius) => {
+      ctx.beginPath();
+      ctx.ellipse(500, 260, radius * 1.35, radius * .72, -.18, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+  } else {
+    ctx.strokeStyle = 'rgba(139,214,204,.15)';
+    ctx.setLineDash([3, 8]);
+    [90, 160, 238, 324, 420].forEach((radius) => {
+      ctx.beginPath();
+      ctx.arc(500, 260, radius, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 6) {
+      ctx.beginPath();
+      ctx.moveTo(500 + Math.cos(angle) * 30, 260 + Math.sin(angle) * 30);
+      ctx.lineTo(500 + Math.cos(angle) * 224, 260 + Math.sin(angle) * 224);
+      ctx.stroke();
+    }
   }
   ctx.setLineDash([]);
   ctx.restore();

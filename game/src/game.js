@@ -457,7 +457,7 @@ export function hudState(game) {
     veilActive: game.saltVeilTime > 0,
     stageSubtitle: level.region,
     toast: game.toast,
-    pageCount: String(game.pagesFound).padStart(2, '0') + ' / 03 CHARTS',
+    pageCount: String(game.pagesFound).padStart(2, '0') + ' / ' + String(LEVELS.length).padStart(2, '0') + ' CHARTS',
   };
 }
 

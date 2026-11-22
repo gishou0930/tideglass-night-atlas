@@ -92,7 +92,34 @@ export const LEVELS = [
   },
 ];
 
+LEVELS.push(
+  {
+    ...LEVELS[2],
+    name: 'The Drowned Clock',
+    subtitle: 'A tide clock counts the lantern sweep',
+    objective: 'The Flood Dial',
+    region: 'THE FLOOD CLOCK',
+    beacon: { x: 500, y: 28, sweep: 1.08, speed: 0.42, range: 540, width: 0.4 },
+    guards: [
+      ...LEVELS[2].guards,
+      { name: 'VESPER', title: 'Bell keeper', route: [[430, 430], [704, 430], [704, 410], [430, 410]], speed: 52, range: 230, fov: 0.94, tint: '#a5b8dc' },
+    ],
+  },
+  {
+    ...LEVELS[1],
+    name: 'The Sunken Choir',
+    subtitle: 'Every lantern answers the last tide',
+    objective: 'The Tideglass Heart',
+    region: 'THE SUNKEN CHOIR',
+    beacon: { x: 500, y: 28, sweep: 1.22, speed: 0.5, range: 550, width: 0.4 },
+    guards: [
+      ...LEVELS[1].guards,
+      { name: 'VESPER', title: 'Bell keeper', route: [[430, 278], [570, 278], [570, 332], [430, 332]], speed: 54, range: 230, fov: 0.96, tint: '#c3a4d7' },
+    ],
+  },
+);
+
 export const ARCHIVE = {
   name: 'Bellwether Archive',
-  mission: 'Three pages are missing from the Night Atlas. Take each one, then reach the tide door before the beacon turns.',
+  mission: 'Five pages are missing from the Night Atlas. Take each one, then reach the tide door before the beacon turns.',
 };

@@ -1,5 +1,6 @@
 import { createAudio } from './audio.js';
 import { beginGame, continueAfterClear, createGame, hudState, restartLevel, setRoute, throwEcho, togglePause, updateGame, useSaltVeil } from './game.js';
+import { LEVELS } from './levels.js';
 import { renderScene, screenToWorld } from './render.js';
 import { CANVAS } from './render.js';
 
@@ -38,11 +39,11 @@ let lastHud = 0;
 
 function drawScreen(mode) {
   const screens = {
-    title: ['FIELD GUIDE / THE NIGHT ATLAS', 'THE TIDE IS OUT.', 'Three charts are missing. Move softly, read the lanterns, and leave by the tide door.', 'SLIP INSIDE', 'W A S D to move · hold SPACE beside cover'],
+    title: ['FIELD GUIDE / THE NIGHT ATLAS', 'THE TIDE IS OUT.', LEVELS.length + ' charts are missing. Move softly, read the lanterns, and leave by the tide door.', 'SLIP INSIDE', 'W A S D to move · hold SPACE beside cover'],
     paused: ['FIELD NOTES / PAUSED', 'LISTEN TO THE WATER.', 'The keepers keep walking while the room waits for you.', 'RETURN TO THE STACKS', 'Press ESC to return to the archive'],
-    cleared: ['PAGE RECOVERED / FIELD ' + String(game.levelIndex + 1).padStart(2, '0'), 'THE INK REMEMBERS.', 'You crossed the room with ' + Math.round(game.alert * 100) + '% attention. The tide has one more page for you.', game.levelIndex === 2 ? 'FINISH THE ATLAS' : 'OPEN THE NEXT CHART', 'Press ENTER to continue · R to try this room again'],
+    cleared: ['PAGE RECOVERED / FIELD ' + String(game.levelIndex + 1).padStart(2, '0'), 'THE INK REMEMBERS.', 'You crossed the room with ' + Math.round(game.alert * 100) + '% attention. The tide has one more page for you.', game.levelIndex === LEVELS.length - 1 ? 'FINISH THE ATLAS' : 'OPEN THE NEXT CHART', 'Press ENTER to continue · R to try this room again'],
     caught: ['FIELD LOST / THE WARDEN TURNED', 'THE DOOR IS SHUT.', 'A long look became a search. Hide before the lantern settles, or take the room again.', 'TRY THE ROOM AGAIN', 'The patrols always return to their old route'],
-    complete: ['ARCHIVE RESTORED / THREE PAGES', 'THE NIGHT ATLAS IS WHOLE.', 'Three charts returned to the sea. The keepers have only the quiet left to remember.', 'WALK THE ARCHIVE AGAIN', 'Your cleanest route is the one you make your own'],
+    complete: ['ARCHIVE RESTORED / FIVE PAGES', 'THE NIGHT ATLAS IS WHOLE.', 'Five charts returned to the sea. The keepers have only the quiet left to remember.', 'WALK THE ARCHIVE AGAIN', 'Your cleanest route is the one you make your own'],
   };
   const isVisible = Object.prototype.hasOwnProperty.call(screens, mode);
   nodes.screenCard.hidden = !isVisible;
