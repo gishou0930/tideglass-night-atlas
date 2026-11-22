@@ -24,7 +24,7 @@ export function renderScene(ctx, game, time) {
   ctx.save();
   ctx.translate(CANVAS.mapX, CANVAS.mapY);
   ctx.scale(CANVAS.mapW / CANVAS.worldW, CANVAS.mapH / CANVAS.worldH);
-  drawFloor(ctx, game.level, time);
+  drawFloor(ctx, game.level, time, game.levelIndex);
   drawPatrolLines(ctx, game.guards);
   drawLanterns(ctx, game.guards);
   drawBeacon(ctx, game, time);
@@ -72,22 +72,28 @@ function drawMapFrame(ctx, time) {
   });
 }
 
-function drawFloor(ctx, level, time) {
+function drawFloor(ctx, level, time, levelIndex) {
+  const palettes = [
+    { floor: ['#263638', '#1d3030', '#172829'], tile: ['#71827b', '#192e2d'], detail: 'rgba(225,211,177,.15)', pools: ['rgba(190,151,93,.12)', 'rgba(71,143,139,.14)', 'rgba(209,151,85,.12)'] },
+    { floor: ['#1d3540', '#172a35', '#10232e'], tile: ['#75949a', '#142a36'], detail: 'rgba(168,218,213,.17)', pools: ['rgba(64,144,158,.16)', 'rgba(65,113,135,.14)', 'rgba(181,151,103,.10)'] },
+    { floor: ['#27344a', '#1c293c', '#101b2e'], tile: ['#73899b', '#121f32'], detail: 'rgba(177,200,216,.17)', pools: ['rgba(73,129,166,.15)', 'rgba(56,102,155,.14)', 'rgba(145,177,180,.10)'] },
+  ];
+  const palette = palettes[levelIndex] || palettes[0];
   const base = ctx.createLinearGradient(0, 0, 970, 500);
-  base.addColorStop(0, '#263638');
-  base.addColorStop(0.45, '#1d3030');
-  base.addColorStop(1, '#172829');
+  base.addColorStop(0, palette.floor[0]);
+  base.addColorStop(0.45, palette.floor[1]);
+  base.addColorStop(1, palette.floor[2]);
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, 1000, 520);
 
   ctx.save();
-  ctx.globalAlpha = 0.24;
+  ctx.globalAlpha = 0.25;
   for (let y = 0; y < 520; y += 40) {
     for (let x = 0; x < 1000; x += 40) {
-      const shade = ((x / 40 + y / 40) % 2 === 0) ? '#61706a' : '#192e2d';
+      const shade = ((x / 40 + y / 40) % 2 === 0) ? palette.tile[0] : palette.tile[1];
       ctx.fillStyle = shade;
       ctx.fillRect(x + 2, y + 2, 36, 36);
-      ctx.strokeStyle = 'rgba(225,211,177,.15)';
+      ctx.strokeStyle = palette.detail;
       ctx.lineWidth = 0.55;
       ctx.strokeRect(x + 2, y + 2, 36, 36);
       const speck = ((x * 17 + y * 31) % 97) / 97;
@@ -98,9 +104,9 @@ function drawFloor(ctx, level, time) {
   ctx.restore();
 
   const pools = [
-    { x: 185, y: 235, r: 185, color: 'rgba(190,151,93,.10)' },
-    { x: 511, y: 263, r: 205, color: 'rgba(71,143,139,.12)' },
-    { x: 859, y: 240, r: 190, color: 'rgba(209,151,85,.10)' },
+    { x: 185, y: 235, r: 185, color: palette.pools[0] },
+    { x: 511, y: 263, r: 205, color: palette.pools[1] },
+    { x: 859, y: 240, r: 190, color: palette.pools[2] },
   ];
   pools.forEach((pool) => {
     const glow = ctx.createRadialGradient(pool.x, pool.y, 4, pool.x, pool.y, pool.r);
@@ -109,6 +115,7 @@ function drawFloor(ctx, level, time) {
     ctx.fillStyle = glow;
     ctx.fillRect(pool.x - pool.r, pool.y - pool.r, pool.r * 2, pool.r * 2);
   });
+  drawFieldPattern(ctx, levelIndex, time);
 
   ctx.save();
   ctx.strokeStyle = 'rgba(226,214,178,.12)';
@@ -145,6 +152,48 @@ function drawFloor(ctx, level, time) {
   drawTideMarks(ctx, time);
 }
 
+function drawFieldPattern(ctx, levelIndex, time) {
+  ctx.save();
+  ctx.lineWidth = 1;
+  if (levelIndex === 0) {
+    ctx.strokeStyle = 'rgba(224,189,127,.13)';
+    ctx.setLineDash([2, 8]);
+    [84, 146, 206].forEach((radius) => {
+      ctx.beginPath();
+      ctx.arc(500, 260, radius, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
+      ctx.beginPath();
+      ctx.moveTo(500 + Math.cos(angle) * 34, 260 + Math.sin(angle) * 34);
+      ctx.lineTo(500 + Math.cos(angle) * 214, 260 + Math.sin(angle) * 214);
+      ctx.stroke();
+    }
+  } else if (levelIndex === 1) {
+    ctx.strokeStyle = 'rgba(135,210,213,.11)';
+    for (let row = 0; row < 7; row += 1) {
+      const baseY = 48 + row * 73;
+      ctx.beginPath();
+      for (let x = 0; x <= 1000; x += 20) {
+        const y = baseY + Math.sin(x * .018 + time * .35 + row) * 5;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+  } else {
+    ctx.strokeStyle = 'rgba(154,206,225,.12)';
+    ctx.setLineDash([3, 8]);
+    [88, 158, 236, 320, 420].forEach((radius) => {
+      ctx.beginPath();
+      ctx.arc(500, 28, radius, .28, Math.PI - .28);
+      ctx.stroke();
+    });
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
 function drawTideMarks(ctx, time) {
   for (let index = 0; index < 8; index += 1) {
     const y = 58 + index * 55;
@@ -177,14 +226,17 @@ function drawPatrolLines(ctx, guards) {
 }
 
 function drawLanterns(ctx, guards) {
-  guards.forEach((guard) => drawCone(ctx, guard, guard.range, guard.fov / 2, guard.tint, guard.mode === 'alert' ? 0.34 : 0.21));
+  guards.forEach((guard) => {
+    const opacity = guard.mode === 'alert' ? 0.48 : guard.mode === 'investigate' ? 0.34 : 0.3;
+    drawCone(ctx, guard, guard.range, guard.fov / 2, guard.tint, opacity);
+  });
 }
 
 function drawCone(ctx, observer, range, halfAngle, color, opacity) {
   ctx.save();
   const grad = ctx.createRadialGradient(observer.x, observer.y, 5, observer.x, observer.y, range);
   grad.addColorStop(0, colorWithAlpha(color, opacity * 0.86));
-  grad.addColorStop(0.58, colorWithAlpha(color, opacity * 0.44));
+  grad.addColorStop(0.58, colorWithAlpha(color, opacity * 0.52));
   grad.addColorStop(1, colorWithAlpha(color, 0));
   ctx.fillStyle = grad;
   ctx.beginPath();
@@ -193,7 +245,7 @@ function drawCone(ctx, observer, range, halfAngle, color, opacity) {
   ctx.closePath();
   ctx.fill();
   ctx.strokeStyle = colorWithAlpha(color, opacity * 0.9);
-  ctx.lineWidth = 1.2;
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(observer.x, observer.y);
   ctx.lineTo(observer.x + Math.cos(observer.angle - halfAngle) * range, observer.y + Math.sin(observer.angle - halfAngle) * range);
@@ -524,23 +576,34 @@ function drawPlayer(ctx, player, hidden, time) {
   ctx.save();
   ctx.translate(player.x, player.y);
   ctx.rotate(player.angle + Math.PI / 2);
-  ctx.globalAlpha = hidden ? 0.65 : 1;
+  ctx.globalAlpha = hidden ? 0.76 : 1;
   ctx.shadowColor = '#8ae3d0';
-  ctx.shadowBlur = hidden ? 8 : 17;
-  ctx.fillStyle = '#7ccdbb';
+  ctx.shadowBlur = hidden ? 10 : 20;
+  ctx.fillStyle = hidden ? '#438f81' : '#62c5ae';
   ctx.beginPath();
-  ctx.ellipse(-7, -1, 6, 10 + Math.sin(time * 8) * 1.4, -.5, 0, Math.PI * 2);
-  ctx.ellipse(7, -1, 6, 10 + Math.sin(time * 8 + .5) * 1.4, .5, 0, Math.PI * 2);
+  ctx.moveTo(-12, 9);
+  ctx.quadraticCurveTo(-15, -2, -8, -11);
+  ctx.quadraticCurveTo(0, -19 - Math.sin(time * 8) * 1.2, 8, -11);
+  ctx.quadraticCurveTo(15, -2, 12, 9);
+  ctx.lineTo(7, 15);
+  ctx.lineTo(-7, 15);
+  ctx.closePath();
   ctx.fill();
   ctx.shadowBlur = 0;
-  ctx.fillStyle = '#193f41';
+  ctx.strokeStyle = 'rgba(213,241,218,.9)';
+  ctx.lineWidth = 1.3;
+  ctx.stroke();
+  ctx.fillStyle = '#e3d4a2';
+  ctx.shadowColor = '#f2d18a';
+  ctx.shadowBlur = 8;
   ctx.beginPath();
-  ctx.arc(0, 0, 7.2, 0, Math.PI * 2);
+  ctx.arc(0, -7, 4.3, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = '#d8e5bf';
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = 'rgba(10,39,40,.8)';
   ctx.lineWidth = 1.2;
   ctx.beginPath();
-  ctx.arc(0, 0, 4, 0, Math.PI * 2);
+  ctx.moveTo(-8, 6); ctx.lineTo(0, 12); ctx.lineTo(8, 6);
   ctx.stroke();
   ctx.fillStyle = BRASS;
   ctx.beginPath();
